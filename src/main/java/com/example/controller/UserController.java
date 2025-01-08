@@ -18,6 +18,11 @@ public class UserController {
         users.add(new User(2L, "Jane Smith", "jane.smith@example.com"));
     }
 
+    @RequestMapping(value = "/path", method = RequestMethod.GET)
+    public String handlerMethod() { // handler logic
+        return "response";
+    }
+
     @GetMapping
     public List<User> getAllUsers() {
         return users;
@@ -26,6 +31,23 @@ public class UserController {
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
         return users.stream().filter(user -> user.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    @GetMapping("/books")
+    public String getBooks(@RequestHeader(value = "Authorization", required = false) String authorizationHeader,
+                           @RequestParam(value = "author", required = false) String author,
+                           @RequestParam(value = "title", required = false) String title) {
+        String response = "Books endpoint accessed.";
+        if (authorizationHeader != null) {
+            response += " Authorization header: " + authorizationHeader;
+        }
+        if (author != null) {
+            response += " Filtering by author: " + author;
+        }
+        if (title != null) {
+            response += " Filtering by title: " + title;
+        }
+        return response;
     }
 
     @PostMapping
